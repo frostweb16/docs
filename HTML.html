@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FROST BERLIAN TOP UP</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="login-container">
+        <div class="login-form">
+            <h2>Login ke FROST BERLIAN TOP UP</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Masukkan Username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Masukkan Password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+                <button type="button" class="switch-btn" onclick="showRegister()">Belum punya akun? Daftar</button>
+                <button type="button" class="switch-btn" onclick="showForgotPassword()">Lupa Password?</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Page -->
+    <div class="register-container" id="register-container" style="display: none;">
+        <div class="register-form">
+            <h2>Daftar Akun FROST BERLIAN TOP UP</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="new-username">Username</label>
+                    <input type="text" id="new-username" name="new-username" placeholder="Masukkan Username Baru" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-email">Email</label>
+                    <input type="email" id="new-email" name="new-email" placeholder="Masukkan Email" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password">Password</label>
+                    <input type="password" id="new-password" name="new-password" placeholder="Masukkan Password Baru" required>
+                </div>
+                <button type="submit" class="register-btn">Daftar</button>
+                <button type="button" class="switch-btn" onclick="showLogin()">Kembali ke Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Forgot Password Page -->
+    <div class="forgot-password-container" id="forgot-password-container" style="display: none;">
+        <div class="forgot-password-form">
+            <h2>Lupa Password</h2>
+            <form id="forgot-password-form">
+                <div class="form-group">
+                    <label for="forgot-username">Username</label>
+                    <input type="text" id="forgot-username" name="forgot-username" placeholder="Masukkan Username" required>
+                </div>
+                <button type="submit" class="forgot-password-btn">Kirim</button>
+                <button type="button" class="switch-btn" onclick="showLogin()">Kembali ke Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Verification Page -->
+    <div class="verification-container" id="verification-container" style="display: none;">
+        <div class="verification-form">
+            <h2>Verifikasi Akun</h2>
+            <form id="verification-form">
+                <div class="form-group">
+                    <label for="verification-username">Username</label>
+                    <input type="text" id="verification-username" name="verification-username" placeholder="Masukkan Username" required>
+                </div>
+                <div class="form-group">
+                    <label for="verification-code">Kode Verifikasi</label>
+                    <input type="text" id="verification-code" name="verification-code" placeholder="Masukkan Kode Verifikasi" required>
+                </div>
+                <button type="submit" class="verify-btn">Verifikasi</button>
+                <button type="button" class="switch-btn" onclick="showLogin()">Kembali ke Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reset Password Page -->
+    <div class="reset-password-container" id="reset-password-container" style="display: none;">
+        <div class="reset-password-form">
+            <h2>Reset Password</h2>
+            <form id="reset-password-form">
+                <div class="form-group">
+                    <label for="reset-username">Username</label>
+                    <input type="text" id="reset-username" name="reset-username" placeholder="Masukkan Username" required>
+                </div>
+                <div class="form-group">
+                    <label for="reset-code">Kode Reset</label>
+                    <input type="text" id="reset-code" name="reset-code" placeholder="Masukkan Kode Reset" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password-reset">Password Baru</label>
+                    <input type="password" id="new-password-reset" name="new-password-reset" placeholder="Masukkan Password Baru" required>
+                </div>
+                <button type="submit" class="reset-btn">Reset Password</button>
+                <button type="button" class="switch-btn" onclick="showLogin()">Kembali ke Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div class="settings-container" id="settings-container" style="display: none;">
+        <div class="settings-form">
+            <h2>Pengaturan Akun</h2>
+            <form id="settings-form">
+                <div class="form-group">
+                    <label for="settings-email">Email Baru</label>
+                    <input type="email" id="settings-email" name="settings-email" placeholder="Masukkan Email Baru" required>
+                </div>
+                <button type="submit" class="settings-btn">Simpan</button>
+                <button type="button" class="switch-btn" onclick="showMainContent()">Kembali</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Top Up Balance Page -->
+    <div class="topup-balance-container" id="topup-balance-container" style="display: none;">
+        <div class="topup-balance-form">
+            <h2>Top Up Saldo</h2>
+            <form id="topup-balance-form">
+                <div class="form-group">
+                    <label for="balance-amount">Jumlah Saldo (Rp)</label>
+                    <input type="number" id="balance-amount" name="balance-amount" placeholder="Masukkan Jumlah (misal: 50000)" required min="10000">
+                </div>
+                <div class="form-group">
+                    <label for="balance-payment">Metode Pembayaran</label>
+                    <select id="balance-payment" name="balance-payment" required>
+                        <option value="" disabled selected>Pilih Metode Pembayaran</option>
+                        <option value="ovo">OVO</option>
+                        <option value="bank">Transfer Bank</option>
+                        <option value="ewallet">E-Wallet (GoPay, Dana)</option>
+                        <option value="credit">Kartu Kredit</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="balance-whatsapp">Nomor WhatsApp</label>
+                    <input type="tel" id="balance-whatsapp" name="balance-whatsapp" placeholder="Masukkan Nomor WhatsApp (contoh: +628123456789)" required>
+                </div>
+                <button type="submit" class="topup-balance-btn">Top Up Saldo</button>
+                <button type="button" class="switch-btn" onclick="showMainContent()">Kembali</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Transaction History Page -->
+    <div class="transaction-history-container" id="transaction-history-container" style="display: none;">
+        <div class="transaction-history-form">
+            <h2>Riwayat Transaksi</h2>
+            <div id="transaction-history"></div>
+            <button type="button" class="switch-btn" onclick="showMainContent()">Kembali</button>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Page -->
+    <div class="admin-container" id="admin-container" style="display: none;">
+        <div class="admin-form">
+            <h2>Admin Dashboard - FROST BERLIAN</h2>
+            <h3>Kontrol Website</h3>
+            <form id="website-content-form">
+                <div class="form-group">
+                    <label for="banner-text">Teks Banner</label>
+                    <input type="text" id="banner-text" name="banner-text" placeholder="Masukkan Teks Banner" required>
+                </div>
+                <div class="form-group">
+                    <label for="banner-image">URL Gambar Banner</label>
+                    <input type="url" id="banner-image" name="banner-image" placeholder="Masukkan URL Gambar" required>
+                </div>
+                <button type="submit" class="admin-btn">Simpan Konten</button>
+            </form>
+            <h3>Data Pengguna</h3>
+            <div id="users-list"></div>
+            <h3>Statistik Website</h3>
+            <div id="website-stats"></div>
+            <h3>Informasi Global Saldo</h3>
+            <div id="global-balance"></div>
+            <h3>Semua Transaksi</h3>
+            <div id="all-transactions"></div>
+            <button type="button" class="switch-btn" onclick="showMainContent()">Kembali</button>
+        </div>
+    </div>
+
+    <!-- Confirmation Page -->
+    <div class="confirmation-container" id="confirmation-container" style="display: none;">
+        <div class="confirmation-form">
+            <h2>Konfirmasi Top Up Saldo</h2>
+            <div id="pending-topups"></div>
+            <button type="button" class="switch-btn" onclick="showMainContent()">Kembali</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container" id="main-content" style="display: none;">
+        <div class="banner" id="website-banner"></div>
+        <div class="header">
+            <h1>FROST BERLIAN TOP UP</h1>
+            <div class="user-controls">
+                <span class="balance" id="total-balance">Saldo: Rp 0</span>
+                <button class="topup-balance-btn" onclick="showTopUpBalance()">Top Up Saldo</button>
+                <button class="history-btn" onclick="showTransactionHistory()">Riwayat Transaksi</button>
+                <button class="settings-btn" onclick="showSettings()">Pengaturan</button>
+                <button class="admin-btn" id="admin-btn" onclick="showAdminDashboard()" style="display: none;">Admin Dashboard</button>
+                <button class="confirm-btn" id="confirm-btn" onclick="showConfirmation()" style="display: none;">Konfirmasi Top Up</button>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="topup-form">
+            <h2>Top Up Sekarang</h2>
+            <form id="topup-form">
+                <div class="form-group">
+                    <label for="game">Pilih Game</label>
+                    <select id="game" name="game" required onchange="updatePurchaseOptions()">
+                        <option value="" disabled selected>Pilih Game</option>
+                        <option value="ml">Mobile Legends</option>
+                        <option value="ff">Free Fire</option>
+                        <option value="hok">Honor of Kings</option>
+                        <option value="valorant">Valorant</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="user-id">ID Game</label>
+                    <input type="text" id="user-id" name="user-id" placeholder="Masukkan ID Game (contoh: 12345678(1234) untuk ML)" required>
+                </div>
+                <div class="form-group">
+                    <label for="purchase-type">Jenis Pembelian</label>
+                    <select id="purchase-type" name="purchase-type" required>
+                        <option value="" disabled selected>Pilih Jenis Pembelian</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="whatsapp">Nomor WhatsApp</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" placeholder="Masukkan Nomor WhatsApp (contoh: +628123456789)" required>
+                </div>
+                <div class="form-group">
+                    <label for="payment">Metode Pembayaran</label>
+                    <select id="payment" name="payment" required>
+                        <option value="" disabled selected>Pilih Metode Pembayaran</option>
+                        <option value="ovo">OVO</option>
+                        <option value="bank">Transfer Bank</option>
+                        <option value="ewallet">E-Wallet (GoPay, Dana)</option>
+                        <option value="credit">Kartu Kredit</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Lanjutkan Pembayaran</button>
+            </form>
+        </div>
+
+        <div class="game-list">
+            <div class="game-card">
+                <img src="https://via.placeholder.com/200x120?text=Mobile+Legends" alt="Mobile Legends">
+                <p>Mobile Legends</p>
+            </div>
+            <div class="game-card">
+                <img src="https://via.placeholder.com/200x120?text=Free+Fire" alt="Free Fire">
+                <p>Free Fire</p>
+            </div>
+            <div class="game-card">
+                <img src="https://via.placeholder.com/200x120?text=Honor+of+Kings" alt="Honor of Kings">
+                <p>Honor of Kings</p>
+            </div>
+            <div class="game-card">
+                <img src="https://via.placeholder.com/200x120?text=Valorant" alt="Valorant">
+                <p>Valorant</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
