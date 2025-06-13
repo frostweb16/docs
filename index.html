@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Zone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            position: relative;
+        }
+        .leaderboard-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #00ffff;
+            transition: transform 0.3s ease;
+        }
+        .leaderboard-btn:hover {
+            transform: scale(1.2);
+        }
+        .leaderboard {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+        .leaderboard.active {
+            display: block;
+        }
+        .leaderboard h2 {
+            color: #00cccc;
+            margin-bottom: 15px;
+        }
+        .leaderboard table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .leaderboard th, .leaderboard td {
+            padding: 10px;
+            border: 1px solid #00ffff;
+            text-align: left;
+        }
+        .leaderboard th {
+            background: #333;
+            color: #00cccc;
+        }
+        .leaderboard td {
+            background: #222;
+        }
+        .close-leaderboard {
+            background: #ff4444;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .close-leaderboard:hover {
+            background: #cc0000;
+        }
+        .section {
+            display: none;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        .section.active {
+            display: block;
+        }
+        h1 {
+            color: #00ffff;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        h2 {
+            color: #00cccc;
+            margin-bottom: 15px;
+        }
+        input, button, select {
+            padding: 12px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        input {
+            background: #333;
+            color: #fff;
+            width: 200px;
+        }
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 5px #00ffff;
+        }
+        button {
+            background: #00ffff;
+            color: #000;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #00cccc;
+            transform: scale(1.05);
+        }
+        .coin-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            font-size: 18px;
+        }
+        .coin-icon {
+            width: 30px;
+            height: 30px;
+            background: #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 20px;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+        .send-coin-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 15px 0;
+        }
+        .send-coin-form input {
+            width: 100%;
+            max-width: 250px;
+        }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .game-card {
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .game-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        .game-card .game-icon {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(45deg, #00ffff, #00cccc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #000;
+            filter: brightness(0.8);
+        }
+        .game-card h3 {
+            color: #00ffff;
+            font-size: 1.5em;
+            padding: 10px;
+            text-transform: uppercase;
+        }
+        .game-screen {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .game-screen.active {
+            display: block;
+        }
+        .dice-container, .card-container, .teenpatti-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .dice, .card, .teenpatti-card {
+            width: 80px;
+            height: 80px;
+            background: #333;
+            border: 2px solid #00ffff;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: transform 0.5s ease;
+        }
+        .dice.rolling {
+            animation: roll 0.5s ease-in-out 5;
+        }
+        @keyframes roll {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(360deg) scale(1.2); }
+            100% { transform: rotate(720deg) scale(1); }
+        }
+        .card.dealing, .teenpatti-card.dealing {
+            animation: deal 0.5s ease-in-out;
+        }
+        @keyframes deal {
+            0% { transform: translateY(-100px) scale(0); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        .betting-area {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .chip {
+            width: 50px;
+            height: 50px;
+            background: #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 5px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            font-size: 14px;
+        }
+        .chip:hover, .chip.selected {
+            transform: scale(1.1);
+            border: 2px solid #00ff00;
+        }
+        .column {
+            width: 120px;
+            height: 80px;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            border: 2px solid #fff;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .column.green { background: #00ff00; }
+        .column.blue { background: #0000ff; }
+        .column.purple { background: #800080; }
+        .column:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 5px #fff;
+        }
+        .bet-chip {
+            width: 40px;
+            height: 40px;
+            background: #ffd700;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            z-index: 1;
+            animation: drop 0.5s ease-out;
+        }
+        @keyframes drop {
+            0% { transform: translateY(-50px); }
+            100% { transform: translateY(0); }
+        }
+        .timer {
+            font-size: 18px;
+            color: #ff4444;
+            margin: 10px 0;
+        }
+        .result {
+            font-size: 16px;
+            margin: 10px 0;
+            color: #00ffff;
+        }
+        .history {
+            margin: 20px 0;
+            font-size: 16px;
+            color: #00cccc;
+        }
+        .teenpatti-bets {
+            margin: 20px 0;
+            font-size: 14px;
+            color: #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="leaderboard-btn" onclick="toggleLeaderboard()">🏆</div>
+        <div class="leaderboard" id="leaderboard">
+            <h2>Leaderboard - Top 100 Pemain</h2>
+            <table id="leaderboardTable">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Username</th>
+                        <th>Chips</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody"></tbody>
+            </table>
+            <h2>Teen Patti Win Rankings - Top 10</h2>
+            <table id="teenpattiWinTable">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Username</th>
+                        <th>Wins</th>
+                    </tr>
+                </thead>
+                <tbody id="teenpattiWinBody"></tbody>
+            </table>
+            <button class="close-leaderboard" onclick="toggleLeaderboard()">Tutup</button>
+        </div>
+        <!-- Authentication -->
+        <div class="section auth-container active" id="authContainer">
+            <h1>Game Zone</h1>
+            <div id="loginForm">
+                <h2>Login</h2>
+                <input type="text" id="loginUsername" placeholder="Username">
+                <input type="password" id="loginPassword" placeholder="Password">
+                <button onclick="login()">Login</button>
+                <p>Belum punya akun? <a href="#" onclick="showRegister()">Daftar</a></p>
+            </div>
+            <div id="registerForm" style="display: none;">
+                <h2>Daftar</h2>
+                <input type="text" id="regUsername" placeholder="Username">
+                <input type="password" id="regPassword" placeholder="Password">
+                <button onclick="register()">Daftar</button>
+                <p>Sudah punya akun? <a href="#" onclick="showLogin()">Login</a></p>
+            </div>
+        </div>
+
+        <!-- Home -->
+        <div class="section home-container" id="homeContainer">
+            <h1>Selamat Datang, <span id="usernameDisplay"></span>!</h1>
+            <div class="coin-info">
+                <div class="coin-icon">🪙</div>
+                <span id="coinCount">1000</span>
+            </div>
+            <div class="coin-info">
+                <div class="coin-icon">🪙</div>
+                <input type="number" id="topUpAmount" placeholder="Jumlah Koin">
+                <button onclick="topUpCoins()">Isi Koin</button>
+            </div>
+            <div class="send-coin-form">
+                <input type="text" id="sendId" placeholder="ID Pengguna">
+                <input type="number" id="sendAmount" placeholder="Jumlah Koin">
+                <button onclick="sendCoins()">Kirim</button>
+            </div>
+            <h2>Pilih Game</h2>
+            <div class="game-grid">
+                <div class="game-card" onclick="playGame('Sicbo')">
+                    <div class="game-icon">Sicbo</div>
+                    <h3>Sicbo</h3>
+                </div>
+                <div class="game-card" onclick="playGame('Big Card')">
+                    <div class="game-icon">Big Card</div>
+                    <h3>Big Card</h3>
+                </div>
+                <div class="game-card" onclick="playGame('Daduan')">
+                    <div class="game-icon">Daduan</div>
+                    <h3>Daduan</h3>
+                </div>
+                <div class="game-card" onclick="playGame('Teen Patti')">
+                    <div class="game-icon">Teen Patti</div>
+                    <h3>Teen Patti</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="section game-container" id="gameContainer">
+            <h1 id="gameTitle"></h1>
+            <div class="game-screen" id="gameScreen">
+                <!-- Sicbo -->
+                <div id="sicboGame" style="display: none;">
+                    <div class="betting-area">
+                        <select id="sicboBetType">
+                            <option value="Big">Besar (11-17)</option>
+                            <option value="Small">Kecil (4-10)</option>
+                        </select>
+                        <input type="number" id="sicboBetAmount" placeholder="Jumlah Taruhan">
+                        <button onclick="placeSicboBet()">Pasang Taruhan</button>
+                    </div>
+                    <div class="dice-container" id="sicboDiceContainer">
+                        <div class="dice" id="sicboDice1">1</div>
+                        <div class="dice" id="sicboDice2">1</div>
+                        <div class="dice" id="sicboDice3">1</div>
+                    </div>
+                    <div class="total-dice" id="sicboTotal"></div>
+                    <div class="result" id="sicboBetResult"></div>
+                </div>
+                <!-- Big Card -->
+                <div id="bigcardGame" style="display: none;">
+                    <div class="betting-area">
+                        <input type="number" id="bigcardBetAmount" placeholder="Jumlah Taruhan">
+                        <button onclick="placeBigCardBet()">Pasang Taruhan</button>
+                    </div>
+                    <div class="card-container">
+                        <h3 id="playerName">Pemain</h3>
+                        <div class="card" id="playerCard"></div>
+                    </div>
+                    <div class="card-container">
+                        <h3 id="botName">Bot</h3>
+                        <div class="card" id="botCard"></div>
+                    </div>
+                    <div class="result" id="bigcardBetResult"></div>
+                </div>
+                <!-- Daduan -->
+                <div id="daduanGame" style="display: none;">
+                    <div class="betting-area">
+                        <select id="daduanBetType">
+                            <option value="Over">Di Atas 7</option>
+                            <option value="Under">Di Bawah 7</option>
+                            <option value="7">Total 7</option>
+                            <option value="11">Total 11</option>
+                        </select>
+                        <input type="number" id="daduanBetAmount" placeholder="Jumlah Taruhan">
+                        <button onclick="placeDaduanBet()">Pasang Taruhan</button>
+                    </div>
+                    <div class="dice-container" id="daduanDiceContainer">
+                        <div class="dice" id="daduanDice1">1</div>
+                        <div class="dice" id="daduanDice2">1</div>
+                    </div>
+                    <div class="total-dice" id="daduanTotal"></div>
+                    <div class="result" id="daduanBetResult"></div>
+                </div>
+                <!-- Teen Patti -->
+                <div id="teenpattiGame" style="display: none;">
+                    <div class="timer" id="teenpattiTimer">Waktu Taruhan: 15 detik</div>
+                    <div class="teenpatti-bets" id="teenpattiBetsDisplay"></div>
+                    <div class="betting-area">
+                        <div>
+                            <h3>Pilih Chip</h3>
+                            <div class="chip" onclick="selectChip(500)">500</div>
+                            <div class="chip" onclick="selectChip(1000)">1K</div>
+                            <div class="chip" onclick="selectChip(5000)">5K</div>
+                            <div class="chip" onclick="selectChip(20000)">20K</div>
+                            <div class="chip" onclick="selectChip(50000)">50K</div>
+                            <div class="chip" onclick="selectChip(100000)">100K</div>
+                            <div class="chip" onclick="selectChip(1000000)">1M</div>
+                            <div class="chip" onclick="selectChip(100000000)">100M</div>
+                        </div>
+                        <div>
+                            <h3>Pilih Kolom</h3>
+                            <div class="column green" onclick="placeTeenPattiBet('green')">🟢 Hijau</div>
+                            <div class="column blue" onclick="placeTeenPattiBet('blue')">🔵 Biru</div>
+                            <div class="column purple" onclick="placeTeenPattiBet('purple')">🟣 Ungu</div>
+                        </div>
+                    </div>
+                    <div class="teenpatti-container" id="greenCards">
+                        <h3>Hijau</h3>
+                        <div class="teenpatti-card" id="greenCard1"></div>
+                        <div class="teenpatti-card" id="greenCard2"></div>
+                        <div class="teenpatti-card" id="greenCard3"></div>
+                    </div>
+                    <div class="teenpatti-container" id="blueCards">
+                        <h3>Biru</h3>
+                        <div class="teenpatti-card" id="blueCard1"></div>
+                        <div class="teenpatti-card" id="blueCard2"></div>
+                        <div class="teenpatti-card" id="blueCard3"></div>
+                    </div>
+                    <div class="teenpatti-container" id="purpleCards">
+                        <h3>Ungu</h3>
+                        <div class="teenpatti-card" id="purpleCard1"></div>
+                        <div class="teenpatti-card" id="purpleCard2"></div>
+                        <div class="teenpatti-card" id="purpleCard3"></div>
+                    </div>
+                    <div class="result" id="teenpattiBetResult"></div>
+                    <div class="history" id="teenpattiHistory"></div>
+                </div>
+                <button onclick="backToHome()">Kembali</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let coins = 10000;
+        let currentUsername = '';
+        let teenpattiBets = {};
+        let selectedChip = 0;
+        let teenpattiTimer = null;
+        let teenpattiHistory = JSON.parse(localStorage.getItem('teenpattiHistory')) || [];
+        let teenpattiServerBets = JSON.parse(localStorage.getItem('teenpattiServerBets')) || {};
+        let teenpattiWins = JSON.parse(localStorage.getItem('teenpattiWins')) || [];
+        const suits = ['♠', '♥', '♦', '♣'];
+        const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+        let leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
+        let usersData = JSON.parse(localStorage.getItem('users')) || {};
+
+        function updateLeaderboard(username, chipAmount) {
+            const existingUser = leaderboardData.find(user => user.username === username);
+            if (existingUser) {
+                existingUser.chips = chipAmount;
+            } else {
+                leaderboardData.push({ username, chips: chipAmount });
+            }
+            leaderboardData.sort((a, b) => b.chips - a.chips);
+            if (leaderboardData.length > 100) leaderboardData = leaderboardData.slice(0, 100);
+            localStorage.setItem('leaderboard', JSON.stringify(leaderboardData));
+        }
+
+        function updateTeenPattiWins(username) {
+            const existingUser = teenpattiWins.find(user => user.username === username);
+            if (existingUser) {
+                existingUser.wins += 1;
+            } else {
+                teenpattiWins.push({ username, wins: 1 });
+            }
+            teenpattiWins.sort((a, b) => b.wins - a.wins);
+            if (teenpattiWins.length > 10) teenpattiWins = teenpattiWins.slice(0, 10);
+            localStorage.setItem('teenpattiWins', JSON.stringify(teenpattiWins));
+        }
+
+        function toggleLeaderboard() {
+            const leaderboard = document.getElementById('leaderboard');
+            leaderboard.classList.toggle('active');
+            if (leaderboard.classList.contains('active')) {
+                displayLeaderboard();
+            }
+        }
+
+        function displayLeaderboard() {
+            const leaderboardBody = document.getElementById('leaderboardBody');
+            leaderboardBody.innerHTML = '';
+            leaderboardData.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${user.username}</td>
+                    <td>${user.chips}</td>
+                `;
+                leaderboardBody.appendChild(row);
+            });
+
+            const teenpattiWinBody = document.getElementById('teenpattiWinBody');
+            teenpattiWinBody.innerHTML = '';
+            teenpattiWins.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${user.username}</td>
+                    <td>${user.wins}</td>
+                `;
+                teenpattiWinBody.appendChild(row);
+            });
+        }
+
+        function showRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            if (!username || !password) {
+                alert('Masukkan username dan kata sandi!');
+                return;
+            }
+            if (!usersData[username]) {
+                alert('Username tidak ditemukan! Silakan daftar terlebih dahulu.');
+                return;
+            }
+            if (usersData[username].password !== password) {
+                alert('Kata sandi salah!');
+                return;
+            }
+            currentUsername = username;
+            coins = usersData[username].coins;
+            document.getElementById('usernameDisplay').textContent = username;
+            document.getElementById('authContainer').classList.remove('active');
+            document.getElementById('homeContainer').classList.add('active');
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            updateCoinDisplay();
+            updateLeaderboard(username, coins);
+        }
+
+        function register() {
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            if (!username || !password) {
+                alert('Masukkan username dan kata sandi!');
+                return;
+            }
+            if (username.length < 3 || username.length > 20) {
+                alert('Username harus antara 3 hingga 20 karakter!');
+                return;
+            }
+            if (password.length < 6) {
+                alert('Kata sandi harus minimal 6 karakter!');
+                return;
+            }
+            if (usersData[username]) {
+                alert('Username sudah ada! Silakan pilih username lain.');
+                return;
+            }
+            usersData[username] = { coins: 10000, password: password };
+            localStorage.setItem('users', JSON.stringify(usersData));
+            alert('Pendaftaran berhasil! Silakan login.');
+            document.getElementById('regUsername').value = '';
+            document.getElementById('regPassword').value = '';
+            showLogin();
+        }
+
+        function topUpCoins() {
+            const amount = parseInt(document.getElementById('topUpAmount').value);
+            if (amount > 0 && !isNaN(amount)) {
+                coins += amount;
+                usersData[currentUsername].coins = coins;
+                localStorage.setItem('users', JSON.stringify(usersData));
+                updateCoinDisplay();
+                updateLeaderboard(currentUsername, coins);
+                document.getElementById('topUpAmount').value = '';
+                alert(`Berhasil mengisi ${amount} koin!`);
+            } else {
+                alert('Masukkan jumlah koin yang valid!');
+            }
+        }
+
+        function sendCoins() {
+            const id = document.getElementById('sendId').value;
+            const amount = parseInt(document.getElementById('sendAmount').value);
+            if (!id || id === currentUsername) {
+                alert('Masukkan ID pengguna yang valid dan bukan ID Anda sendiri!');
+                return;
+            }
+            if (!usersData[id]) {
+                alert('ID pengguna tidak ditemukan!');
+                return;
+            }
+            if (amount > 0 && amount <= coins && !isNaN(amount)) {
+                coins -= amount;
+                usersData[currentUsername].coins = coins;
+                usersData[id].coins += amount;
+                localStorage.setItem('users', JSON.stringify(usersData));
+                updateCoinDisplay();
+                updateLeaderboard(currentUsername, coins);
+                updateLeaderboard(id, usersData[id].coins);
+                document.getElementById('sendId').value = '';
+                document.getElementById('sendAmount').value = '';
+                alert(`Berhasil mengirim ${amount} koin ke ID ${id}!`);
+            } else {
+                alert('Masukkan jumlah koin yang valid atau pastikan koin cukup!');
+            }
+        }
+
+        function updateCoinDisplay() {
+            document.getElementById('coinCount').textContent = coins;
+        }
+
+        function playGame(gameName) {
+            document.getElementById('homeContainer').classList.remove('active');
+            document.getElementById('gameContainer').classList.add('active');
+            document.getElementById('gameTitle').textContent = gameName;
+            document.getElementById('gameScreen').classList.add('active');
+            document.getElementById('sicboGame').style.display = 'none';
+            document.getElementById('bigcardGame').style.display = 'none';
+            document.getElementById('daduanGame').style.display = 'none';
+            document.getElementById('teenpattiGame').style.display = 'none';
+            if (gameName === 'Sicbo') {
+                document.getElementById('sicboGame').style.display = 'block';
+                initSicbo();
+            } else if (gameName === 'Big Card') {
+                document.getElementById('bigcardGame').style.display = 'block';
+                initBigCard();
+            } else if (gameName === 'Daduan') {
+                document.getElementById('daduanGame').style.display = 'block';
+                initDaduan();
+            } else if (gameName === 'Teen Patti') {
+                document.getElementById('teenpattiGame').style.display = 'block';
+                initTeenPatti();
+            }
+        }
+
+        function backToHome() {
+            document.getElementById('gameContainer').classList.remove('active');
+            document.getElementById('homeContainer').classList.add('active');
+            document.getElementById('gameScreen').classList.remove('active');
+            if (teenpattiTimer) {
+                clearInterval(teenpattiTimer);
+                teenpattiTimer = null;
+            }
+        }
+
+        // Sicbo
+        function initSicbo() {
+            document.getElementById('sicboDice1').textContent = '1';
+            document.getElementById('sicboDice2').textContent = '1';
+            document.getElementById('sicboDice3').textContent = '1';
+            document.getElementById('sicboTotal').textContent = '';
+            document.getElementById('sicboBetResult').textContent = 'Pilih taruhan dan jumlah koin!';
+        }
+
+        function placeSicboBet() {
+            const betType = document.getElementById('sicboBetType').value;
+            const betAmount = parseInt(document.getElementById('sicboBetAmount').value);
+            if (betAmount > 0 && betAmount <= coins && !isNaN(betAmount)) {
+                coins -= betAmount;
+                usersData[currentUsername].coins = coins;
+                localStorage.setItem('users', JSON.stringify(usersData));
+                updateCoinDisplay();
+                updateLeaderboard(currentUsername, coins);
+                rollSicboDice(betType, betAmount);
+            } else {
+                alert('Jumlah taruhan tidak valid atau koin tidak cukup!');
+            }
+        }
+
+        function rollSicboDice(betType, betAmount) {
+            const dice1 = Math.floor(Math.random() * 6) + 1;
+            const dice2 = Math.floor(Math.random() * 6) + 1;
+            const dice3 = Math.floor(Math.random() * 6) + 1;
+            const total = dice1 + dice2 + dice3;
+
+            let i = 0;
+            const diceElements = [
+                document.getElementById('sicboDice1'),
+                document.getElementById('sicboDice2'),
+                document.getElementById('sicboDice3')
+            ];
+            diceElements.forEach(dice => dice.classList.add('rolling'));
+            const rollInterval = setInterval(() => {
+                diceElements.forEach(dice => {
+                    dice.textContent = Math.floor(Math.random() * 6) + 1;
+                });
+                i++;
+                if (i > 10) {
+                    clearInterval(rollInterval);
+                    diceElements[0].textContent = dice1;
+                    diceElements[1].textContent = dice2;
+                    diceElements[2].textContent = dice3;
+                    diceElements.forEach(dice => dice.classList.remove('rolling'));
+                    document.getElementById('sicboTotal').textContent = `Total: ${total}`;
+                    checkSicboBetResult(betType, betAmount, total);
+                }
+            }, 100);
+        }
+
+        function checkSicboBetResult(betType, betAmount, total) {
+            let resultText = `Hasil: ${total} - `;
+            let win = false;
+            if (betType === 'Big' && total >= 11 && total <= 17) win = true;
+            else if (betType === 'Small' && total >= 4 && total <= 10) win = true;
+            if (win) {
+                coins += betAmount * 2;
+                resultText += `Kamu menang! +${betAmount * 2} koin`;
+            } else {
+                resultText += 'Kamu kalah!';
+            }
+            usersData[currentUsername].coins = coins;
+            localStorage.setItem('users', JSON.stringify(usersData));
+            updateCoinDisplay();
+            updateLeaderboard(currentUsername, coins);
+            document.getElementById('sicboBetResult').textContent = resultText;
+        }
+
+        // Big Card
+        function initBigCard() {
+            document.getElementById('playerCard').textContent = '';
+            document.getElementById('botCard').textContent = '';
+            document.getElementById('bigcardBetResult').textContent = 'Pasang taruhan untuk mulai!';
+            document.getElementById('playerName').textContent = currentUsername;
+            const botNames = ['Alex', 'Rina', 'Jaka', 'Sari', 'Bima'];
+            document.getElementById('botName').textContent = botNames[Math.floor(Math.random() * botNames.length)];
+        }
+
+        function placeBigCardBet() {
+            const betAmount = parseInt(document.getElementById('bigcardBetAmount').value);
+            if (betAmount > 0 && betAmount <= coins && !isNaN(betAmount)) {
+                coins -= betAmount;
+                usersData[currentUsername].coins = coins;
+                localStorage.setItem('users', JSON.stringify(usersData));
+                updateCoinDisplay();
+                updateLeaderboard(currentUsername, coins);
+                dealBigCardCards(betAmount);
+            } else {
+                alert('Jumlah taruhan tidak valid atau koin tidak cukup!');
+            }
+        }
+
+        function dealBigCardCards(betAmount) {
+            const cardElements = [
+                document.getElementById('playerCard'),
+                document.getElementById('botCard')
+            ];
+            const deck = [];
+            suits.forEach(suit => values.forEach(value => deck.push(`${value}${suit}`)));
+            const shuffledDeck = deck.sort(() => Math.random() - 0.5);
+            let playerCard, botCard;
+            const randomWeight = Math.random();
+            if (randomWeight < 0.25) { // 25% chance for bot to win
+                botCard = shuffledDeck[0];
+                playerCard = shuffledDeck[Math.floor(Math.random() * (deck.length - 1)) + 1];
+            } else { // 75% chance for player to win
+                playerCard = shuffledDeck[0];
+                botCard = shuffledDeck[Math.floor(Math.random() * (deck.length - 1)) + 1];
+            }
+
+            let i = 0;
+            cardElements.forEach(card => card.classList.add('dealing'));
+            const dealInterval = setInterval(() => {
+                if (i < cardElements.length) {
+                    cardElements[i].textContent = i === 0 ? playerCard : botCard;
+                    i++;
+                } else {
+                    clearInterval(dealInterval);
+                    cardElements.forEach(card => card.classList.remove('dealing'));
+                    checkBigCardBetResult(betAmount, playerCard, botCard);
+                }
+            }, 300);
+        }
+
+        function getCardValue(card) {
+            const value = card.slice(0, -1);
+            return values.indexOf(value);
+        }
+
+        function checkBigCardBetResult(betAmount, playerCard, botCard) {
+            const playerScore = getCardValue(playerCard);
+            const botScore = getCardValue(botCard);
+            let resultText = `${currentUsername}: ${playerCard} | ${document.getElementById('botName').textContent}: ${botCard} - `;
+            if (playerScore > botScore) {
+                coins += betAmount * 2;
+                resultText += `Kamu menang! +${betAmount * 2} koin`;
+            } else {
+                resultText += `${document.getElementById('botName').textContent} menang!`;
+            }
+            usersData[currentUsername].coins = coins;
+            localStorage.setItem('users', JSON.stringify(usersData));
+            updateCoinDisplay();
+            updateLeaderboard(currentUsername, coins);
+            document.getElementById('bigcardBetResult').textContent = resultText;
+        }
+
+        // Daduan
+        function initDaduan() {
+            document.getElementById('daduanDice1').textContent = '1';
+            document.getElementById('daduanDice2').textContent = '1';
+            document.getElementById('daduanTotal').textContent = '';
+            document.getElementById('daduanBetResult').textContent = 'Pilih taruhan dan jumlah koin!';
+        }
+
+        function placeDaduanBet() {
+            const betType = document.getElementById('daduanBetType').value;
+            const betAmount = parseInt(document.getElementById('daduanBetAmount').value);
+            if (betAmount > 0 && betAmount <= coins && !isNaN(betAmount)) {
+                coins -= betAmount;
+                usersData[currentUsername].coins = coins;
+                localStorage.setItem('users', JSON.stringify(usersData));
+                updateCoinDisplay();
+                updateLeaderboard(currentUsername, coins);
+                rollDaduanDice(betType, betAmount);
+            } else {
+                alert('Jumlah taruhan tidak valid atau koin tidak cukup!');
+            }
+        }
+
+        function rollDaduanDice(betType, betAmount) {
+            const dice1 = Math.floor(Math.random() * 6) + 1;
+            const dice2 = Math.floor(Math.random() * 6) + 1;
+            const total = dice1 + dice2;
+
+            let i = 0;
+            const diceElements = [
+                document.getElementById('daduanDice1'),
+                document.getElementById('daduanDice2')
+            ];
+            diceElements.forEach(dice => dice.classList.add('rolling'));
+            const rollInterval = setInterval(() => {
+                diceElements.forEach(dice => {
+                    dice.textContent = Math.floor(Math.random() * 6) + 1;
+                });
+                i++;
+                if (i > 10) {
+                    clearInterval(rollInterval);
+                    diceElements[0].textContent = dice1;
+                    diceElements[1].textContent = dice2;
+                    diceElements.forEach(dice => dice.classList.remove('rolling'));
+                    document.getElementById('daduanTotal').textContent = `Total: ${total}`;
+                    checkDaduanBetResult(betType, betAmount, total);
+                }
+            }, 100);
+        }
+
+        function checkDaduanBetResult(betType, betAmount, total) {
+            let resultText = `Hasil: ${total} - `;
+            let win = false;
+            if (betType === 'Over' && total > 7) win = true;
+            else if (betType === 'Under' && total < 7) win = true;
+            else if (betType === '7' && total === 7) win = true;
+            else if (betType === '11' && total === 11) win = true;
+            if (win) {
+                const multiplier = (betType === '7' || betType === '11') ? 4 : 2;
+                coins += betAmount * multiplier;
+                resultText += `Kamu menang! +${betAmount * multiplier} koin`;
+            } else {
+                resultText += 'Kamu kalah!';
+            }
+            usersData[currentUsername].coins = coins;
+            localStorage.setItem('users', JSON.stringify(usersData));
+            updateCoinDisplay();
+            updateLeaderboard(currentUsername, coins);
+            document.getElementById('daduanBetResult').textContent = resultText;
+        }
+
+        // Teen Patti
+        function initTeenPatti() {
+            teenpattiBets = {};
+            selectedChip = 0;
+            document.querySelectorAll('.column').forEach(col => col.innerHTML = col.textContent);
+            document.getElementById('teenpattiBetResult').textContent = 'Pilih chip dan kolom untuk bertaruh!';
+            ['green', 'blue', 'purple'].forEach(color => {
+                document.getElementById(`${color}Card1`).textContent = '';
+                document.getElementById(`${color}Card2`).textContent = '';
+                document.getElementById(`${color}Card3`).textContent = '';
+            });
+            updateTeenPattiBetsDisplay();
+            updateTeenPattiHistoryDisplay();
+            startTeenPattiTimer();
+        }
+
+        function selectChip(amount) {
+            selectedChip = amount;
+            document.querySelectorAll('.chip').forEach(chip => chip.classList.remove('selected'));
+            event.target.classList.add('selected');
+            document.getElementById('teenpattiBetResult').textContent = `Chip terpilih: ${amount}`;
+        }
+
+        function placeTeenPattiBet(color) {
+            if (!selectedChip) {
+                alert('Pilih chip terlebih dahulu!');
+                return;
+            }
+            if (Object.keys(teenpattiBets).length >= 2 && !teenpattiBets[color]) {
+                alert('Maksimal 2 kolom per putaran!');
+                return;
+            }
+            if (selectedChip > coins) {
+                alert('Koin tidak cukup!');
+                return;
+            }
+            teenpattiBets[color] = (teenpattiBets[color] || 0) + selectedChip;
+            coins -= selectedChip;
+            usersData[currentUsername].coins = coins;
+            localStorage.setItem('users', JSON.stringify(usersData));
+            teenpattiServerBets[currentUsername] = teenpattiServerBets[currentUsername] || {};
+            teenpattiServerBets[currentUsername][color] = (teenpattiServerBets[currentUsername][color] || 0) + selectedChip;
+            localStorage.setItem('teenpattiServerBets', JSON.stringify(teenpattiServerBets));
+            updateCoinDisplay();
+            updateLeaderboard(currentUsername, coins);
+            updateTeenPattiBetsDisplay();
+
+            const betChip = document.createElement('div');
+            betChip.className = 'bet-chip';
+            betChip.textContent = selectedChip;
+            betChip.style.left = `${Math.random() * 80}px`;
+            betChip.style.top = `${Math.random() * 40}px`;
+            document.querySelector(`.column.${color}`).appendChild(betChip);
+
+            document.getElementById('teenpattiBetResult').textContent = `Taruhan pada ${color}: ${teenpattiBets[color]} koin`;
+        }
+
+        function updateTeenPattiBetsDisplay() {
+            const betsDisplay = document.getElementById('teenpattiBetsDisplay');
+            let displayText = 'Taruhan Pengguna:<br>';
+            for (const user in teenpattiServerBets) {
+                for (const color in teenpattiServerBets[user]) {
+                    displayText += `${user} bertaruh ${teenpattiServerBets[user][color]} koin pada ${color}<br>`;
+                }
+            }
+            betsDisplay.innerHTML = displayText;
+        }
+
+        function updateTeenPattiHistoryDisplay() {
+            const historyDisplay = document.getElementById('teenpattiHistory');
+            let historyText = 'Riwayat Permainan: ';
+            const colorMap = { 'green': '🟢', 'blue': '🔵', 'purple': '🟣' };
+            historyText += teenpattiHistory.map(color => colorMap[color]).join('');
+            historyDisplay.textContent = historyText;
+        }
+
+        function startTeenPattiTimer() {
+            let timeLeft = 15;
+            document.getElementById('teenpattiTimer').textContent = `Waktu Taruhan: ${timeLeft} detik`;
+            teenpattiTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('teenpattiTimer').textContent = `Waktu Taruhan: ${timeLeft} detik`;
+                if (timeLeft <= 0) {
+                    clearInterval(teenpattiTimer);
+                    teenpattiTimer = null;
+                    dealTeenPattiCards();
+                }
+            }, 1000);
+        }
+
+        function dealTeenPattiCards() {
+            const deck = [];
+            suits.forEach(suit => values.forEach(value => deck.push(`${value}${suit}`)));
+            const shuffledDeck = deck.sort(() => Math.random() - 0.5);
+            const greenCards = shuffledDeck.slice(0, 3);
+            const blueCards = shuffledDeck.slice(3, 6);
+            const purpleCards = shuffledDeck.slice(6, 9);
+
+            const cardElements = {
+                green: [document.getElementById('greenCard1'), document.getElementById('greenCard2'), document.getElementById('greenCard3')],
+                blue: [document.getElementById('blueCard1'), document.getElementById('blueCard2'), document.getElementById('blueCard3')],
+                purple: [document.getElementById('purpleCard1'), document.getElementById('purpleCard2'), document.getElementById('purpleCard3')]
+            };
+
+            let i = 0;
+            Object.keys(cardElements).forEach(color => cardElements[color].forEach(card => card.classList.add('dealing')));
+            const dealInterval = setInterval(() => {
+                if (i < 3) {
+                    cardElements.green[i].textContent = greenCards[i];
+                    cardElements.blue[i].textContent = blueCards[i];
+                    cardElements.purple[i].textContent = purpleCards[i];
+                    i++;
+                } else {
+                    clearInterval(dealInterval);
+                    Object.keys(cardElements).forEach(color => cardElements[color].forEach(card => card.classList.remove('dealing')));
+                    checkTeenPattiResult(greenCards, blueCards, purpleCards);
+                }
+            }, 300);
+        }
+
+        function evaluateTeenPattiHand(cards) {
+            const values = cards.map(card => card.slice(0, -1));
+            const counts = {};
+            values.forEach(value => counts[value] = (counts[value] || 0) + 1);
+            const maxCount = Math.max(...Object.values(counts));
+            const suits = cards.map(card => card.slice(-1));
+            const isSameSuit = suits.every(suit => suit === suits[0]);
+            const valueNumbers = values.map(v => values.indexOf(v) + 2).sort((a, b) => a - b);
+            const isSequence = valueNumbers[2] === valueNumbers[0] + 2 && valueNumbers[1] === valueNumbers[0] + 1;
+
+            if (maxCount === 3) return { rank: 6, name: 'Trail' };
+            if (isSameSuit && isSequence) return { rank: 5, name: 'Pure Sequence' };
+            if (isSequence) return { rank: 4, name: 'Sequence' };
+            if (isSameSuit) return { rank: 3, name: 'Color' };
+            if (maxCount === 2) return { rank: 2, name: 'Pair' };
+            return { rank: 1, name: 'High Card', high: values[0] };
+        }
+
+        function checkTeenPattiResult(greenCards, blueCards, purpleCards) {
+            const greenHand = evaluateTeenPattiHand(greenCards);
+            const blueHand = evaluateTeenPattiHand(blueCards);
+            const purpleHand = evaluateTeenPattiHand(purpleCards);
+            const hands = [
+                { color: 'green', hand: greenHand, cards: greenCards },
+                { color: 'blue', hand: blueHand, cards: blueCards },
+                { color: 'purple', hand: purpleHand, cards: purpleCards }
+            ];
+            const winner = hands.reduce((a, b) => a.hand.rank > b.hand.rank ? a : b);
+            let resultText = `Hijau: ${greenHand.name} | Biru: ${blueHand.name} | Ungu: ${purpleHand.name} - `;
+            teenpattiHistory.push(winner.color);
+            if (teenpattiHistory.length > 20) teenpattiHistory = [];
+            localStorage.setItem('teenpattiHistory', JSON.stringify(teenpattiHistory));
+            updateTeenPattiHistoryDisplay();
+
+            for (const user in teenpattiServerBets) {
+                if (teenpattiServerBets[user][winner.color]) {
+                    const winAmount = teenpattiServerBets[user][winner.color] * 3;
+                    usersData[user].coins += winAmount;
+                    localStorage.setItem('users', JSON.stringify(usersData));
+                    updateLeaderboard(user, usersData[user].coins);
+                    if (user === currentUsername) {
+                        coins = usersData[user].coins;
+                        updateCoinDisplay();
+                        resultText += `Kamu menang pada ${winner.color}! +${winAmount} koin`;
+                        updateTeenPattiWins(user);
+                    }
+                }
+            }
+            if (!teenpattiServerBets[currentUsername] || !teenpattiServerBets[currentUsername][winner.color]) {
+                resultText += `Pemenang: ${winner.color}. Kamu kalah!`;
+            }
+
+            teenpattiServerBets = {};
+            localStorage.setItem('teenpattiServerBets', JSON.stringify(teenpattiServerBets));
+            document.querySelectorAll('.column').forEach(col => col.innerHTML = col.textContent);
+            updateTeenPattiBetsDisplay();
+            document.getElementById('teenpattiBetResult').textContent = resultText;
+            teenpattiBets = {};
+            setTimeout(initTeenPatti, 3000);
+        }
+    </script>
+</body>
+</html>
